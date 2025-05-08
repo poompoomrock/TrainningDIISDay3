@@ -1,0 +1,62 @@
+﻿
+@using PersonApp.Client.Components.Shared
+
+@inject IJSRuntime js
+<GenericList List="People">
+	<NullTemplate>
+		<div style="color:red;font-weight:bold;">Loading........</div>
+	</NullTemplate>
+	<EmptyTemplate>
+		<div>Person not found.</div>
+	</EmptyTemplate>
+	<ElementTemplate Context="person">
+		<PersonItem Person="person" OnDelete="DeletePerson" />
+	</ElementTemplate>
+</GenericList>
+
+<Confirmation @ref="refConfirm" onCancel="Cancel" onConfirm="Confirm">
+	<ChildContent>
+		Are you sure to delete
+	</ChildContent>
+</Confirmation>
+
+@code {
+	[Parameter]
+	public List<Person>? People { get; set; }
+
+	private Confirmation refConfirm;
+
+	private Person personToBeDeleted;
+	private void DeletePerson(Person person)
+	{ 
+		personToBeDeleted = person;
+		refConfirm.Show(); 
+		#region call javascript
+		// var confirmed = await js.InvokeAsync<bool>("confirm", $"Are you sure to delete {person.FirstName} {person.LastName}");
+
+		// var confirmed = await js.Confirm($"Are you sure to delete {person.FirstName} {person.LastName}");
+
+		// if (confirmed)
+		// {
+		// 	People.Remove(person);
+		// }
+
+		// Console.WriteLine($"Deleting from parent {person.FirstName} {person.LastName}");
+		#endregion call javascript
+	} 
+	private void Confirm()
+	{
+		People.Remove(personToBeDeleted);
+		refConfirm.Hide();
+		personToBeDeleted = null;
+	} 
+	private void Cancel()
+	{
+		refConfirm.Hide();
+	}
+
+	public void DoSomething()
+	{
+		
+	}
+}

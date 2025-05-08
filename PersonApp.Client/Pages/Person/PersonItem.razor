@@ -1,0 +1,28 @@
+﻿
+<p>First name: @((MarkupString)Person.FirstName!) </p>
+<p>Last name: @((MarkupString)Person.LastName!) </p>
+<p>Birth date: @Person.BirthDate?.ToString("yyy/MM/dd") </p>
+
+<button class="btn btn-danger" @onclick="@(()=>OnDelete.InvokeAsync(Person))">Delete</button>
+<a class="btn btn-info" href="/people/edit/@Person.PersonId">Edit</a>
+
+@* <button @onclick="Delete">Delete</button> *@
+<hr />
+
+@code {
+
+	[Parameter]
+	public EventCallback<Person> OnDelete { get; set; }
+
+	[Parameter]
+	public Person Person { get; set; }
+
+	private async Task Delete()
+	{
+
+	  	await OnDelete.InvokeAsync(Person);
+
+		// Console.WriteLine("Deleting " + Person.FirstName + " " + Person.LastName);
+		Console.WriteLine($"Deleting {Person.FirstName} {Person.LastName}");
+	}
+}

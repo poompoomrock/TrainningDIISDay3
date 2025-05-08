@@ -1,0 +1,103 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using PersonApp.Client.IServices
+@using PersonApp.Client.Pages.Person
+@using PersonApp.Client.Components.Shared
+
+@using PersonApp.Shared.Entities
+
+@inject SingletonService singleton
+@inject IPersonService personService
+
+
+<PageTitle>Home</PageTitle>
+
+<AuthorizeView>
+	<Authorized>
+		@context.User.Identity.Name 
+		
+		[ 
+		@context.User.FindFirst("StaffID").Value 
+		]
+		
+		,You are authorized
+	</Authorized>
+	<NotAuthorized>
+		Not authorized
+	</NotAuthorized>
+</AuthorizeView>
+
+<hr/>
+
+
+<h2>@singleton.Value</h2>
+
+@* <h1>Hello, @name.ToUpper() </h1> *@
+
+@* <h1>Hello, @CustomToUpper(name) </h1> *@
+
+<h1>Hello, @Utilities.CustomToUpper(name) </h1>
+
+<h2>Add 2+2 = @(2 + 2) </h2>
+
+<button @onclick="ClickMe">Click me</button>
+<h2>@clicked</h2>
+
+<hr />
+<h1 style="color:@AppState.Color;font-size:@AppState.Size;">Create new person</h1>
+<DummyTextBox AdditionalParameters="addParams" />
+
+<hr />
+
+
+<PersonList People="People" @ref="refPersonList" />
+
+@* <PersonList People="People">
+	<NullTemplate>
+		<div style="color:red;font-weight:bold;">Loading........</div>
+	</NullTemplate>
+	<EmptyTemplate>
+		<div>Person not found.</div>
+	</EmptyTemplate>
+</PersonList> *@
+
+@code {
+
+	[CascadingParameter]
+	public PersonApp.Shared.Models.AppState AppState { get; set; }
+
+	Dictionary<string, object>? addParams = new Dictionary<string, object>();
+
+	private PersonList refPersonList;
+
+	string name = "Panuwat Buapetch";
+
+	string clicked = "";
+	private void ClickMe()
+	{
+		refPersonList.DoSomething();
+		clicked = "Button have been clicked!";
+	}
+
+	List<Person>? People;
+
+	protected override async Task OnInitializedAsync()
+	{ 
+		addParams.Add("placeholder", "parent placeholder");
+		addParams.Add("disabled", "disabled");
+		addParams.Add("style", "color:red;");
+
+		await Task.Delay(2000);
+
+		People = await personService.GetPeople();
+
+		// People = new List<Person>
+		// {
+		// 	new Person { FirstName = "<b>John</b>", LastName = "<strong>Doe</strong>", BirthDate = new DateTime(1993, 6, 16) },
+		// 	new Person { FirstName = "<span style='color:red'>Jane</span>", LastName = "Smith", BirthDate = new DateTime(1990, 5, 20) },
+		// 	new Person { FirstName = "Sam", LastName = "Brown", BirthDate = new DateTime(1985, 8, 12) }
+		// };
+	}
+	 
+	 
+}

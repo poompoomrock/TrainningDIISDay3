@@ -1,0 +1,23 @@
+﻿
+<EditForm Model="Person" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<InputNumber class="form-control" @bind-Value="Person.PersonId" />
+	<br/>
+	<InputText class="form-control" @bind-Value="Person.FirstName" />
+	<ValidationMessage For="@(()=>Person.FirstName)"></ValidationMessage>
+	<br/>
+	<InputText class="form-control" @bind-Value="Person.LastName" />
+	<br />
+	<InputDate class="form-control" @bind-Value="Person.BirthDate" />
+	<br/>
+	<button class="btn btn-primary" type="submit">Save</button>
+	<a class="btn btn-warning" href="/people">Cancel</a>
+</EditForm>
+
+@code {
+
+	[Parameter]
+	public Person Person { get; set; }
+	[Parameter]
+	public EventCallback OnValidSubmit { get; set; }
+}

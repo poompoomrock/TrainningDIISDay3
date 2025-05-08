@@ -1,0 +1,30 @@
+﻿@page "/people/edit/{PersonId:int}"
+@using PersonApp.Client.IServices
+
+@inject IPersonService personService
+@inject NavigationManager nav
+<h3>EditPerson</h3>
+
+<PersonForm Person="person" OnValidSubmit="Update" />
+
+@code {
+
+	[Parameter]
+	public int PersonId { get; set; }
+
+	private Person person = new Person();
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (PersonId != null)
+		{
+			person = await personService.GetPersonById(PersonId);
+		}
+	}
+
+	private void Update()
+	{
+		personService.UpdatePerson(person);
+		nav.NavigateTo("/people");
+	}
+}

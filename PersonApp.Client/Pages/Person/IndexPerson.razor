@@ -1,0 +1,23 @@
+﻿@page "/people"
+
+@using PersonApp.Client.IServices
+@inject IPersonService personService
+@inject NavigationManager nav
+
+<h3>People</h3>
+<button @onclick="CreatePersonClick" class="btn btn-primary">Create person</button>
+<hr/>
+<PersonList People="People" />
+
+@code {
+	List<Person>? People;
+	protected override async Task OnInitializedAsync()
+	{ 
+		await Task.Delay(100); 
+		People = await personService.GetPeople(); 
+	}
+	private void CreatePersonClick()
+	{
+		nav.NavigateTo("/people/create");
+	}
+}

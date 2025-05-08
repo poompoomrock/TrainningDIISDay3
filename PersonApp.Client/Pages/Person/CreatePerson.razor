@@ -1,0 +1,17 @@
+﻿@page "/people/create"
+@using PersonApp.Client.IServices
+
+@inject IPersonService personService
+@inject NavigationManager nav
+<h3>CreatePerson</h3>
+
+<PersonForm Person="person" OnValidSubmit="Create" />
+
+@code {
+	private Person person = new Person();
+	private async Task Create()
+	{
+		await personService.InsertPerson(person);
+		nav.NavigateTo("/people");
+	}
+}
